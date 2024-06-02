@@ -1,5 +1,7 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
+from router.route import router
 import json
+
 
 class CustomHandler(BaseHTTPRequestHandler):
     def __init__(self, *args, routes=None, **kwargs):
@@ -19,26 +21,23 @@ class CustomHandler(BaseHTTPRequestHandler):
             self.send_error(404, 'File Not Found: %s' % self.path)
 
 
-def run(server_class=HTTPServer, handler_class=CustomHandler, routes=None, port=3000):
+def run(
+    server_class=HTTPServer,
+    handler_class=CustomHandler,
+    routes=None,
+    # change to custom port
+    port=3000,
+):
     server_address = ('', port)
-    httpd = server_class(server_address, lambda *args, **kwargs: handler_class(*args, routes=routes, **kwargs))
+    httpd = server_class(
+        server_address,
+        lambda *args, **kwargs: handler_class(*args, routes=routes, **kwargs),
+    )
 
     print(f'Server started on port {port}')
     httpd.serve_forever()
 
-
+# run server
 if __name__ == '__main__':
-    routes = {
-        '/': {
-            'status_code': 200,
-            'header': {'Custom-Header': 'Value'},
-            'response': {'status': 'oke'}
-        },
-        '/hello': {
-            'status_code': 200,
-            'header': {'Custom-Header': 'Value'},
-            'response': {'message': 'Hello, World!'}
-        },
-    }
+    routes = router()
     run(routes=routes)
-
