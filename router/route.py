@@ -1,12 +1,11 @@
-# route.py
 from http.server import BaseHTTPRequestHandler
-import json
+from handler.TestController import GET as TestGet  # Perbaikan sintaks import
 
 
 class Route:
     @staticmethod
     def GET(route, status_code, header, response):
-        return lambda *args, **kwargs: BaseHTTPRequestHandler(
+        return lambda *args, **kwargs: TestGet(
             route, status_code, header, response, *args, **kwargs
         )
 
@@ -17,13 +16,12 @@ class Route:
         )
 
 
-# this is router
 def router():
     return {
         '/': {
             'status_code': 200,
             'header': {'Custom-Header': 'Value'},
-            'response': {'status': 'oke'},
+            'response': TestGet(),  # Menggunakan handler TestController
         },
         '/hello': {
             'status_code': 200,
